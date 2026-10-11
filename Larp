@@ -27,7 +27,7 @@ local Config = {
     SpeedBoost = false, JumpBoost = false, InstantInteract = false, AntiFall = false,
     Speed = 50, Jump = 100, AutoQTE = false
 }
-local tbl = Config  -- alias for ported code
+local tbl = Config
 local tbl2 = {}
 local tbl3 = { lastTPTime = 0, lastGlassTPTime = 0, lastRopeTPTime = 0, lastRelaxTime = 0, lastPressTime = 0, lastUtilitiesTPTime = 0, lastAARLGLTPTime = 0 }
 local OldWalkSpeed = 16
@@ -62,7 +62,7 @@ local WorldFolder = Instance.new("Folder", Workspace); WorldFolder.Name = "LX_Wo
 local HideSeekFolder = Instance.new("Folder", Workspace); HideSeekFolder.Name = "LX_HideSeekESP"
 
 --==================================================
--- NOTIFICATION SYSTEM (LUME X style)
+-- NOTIFICATION SYSTEM
 --==================================================
 local notifyGui = Instance.new("ScreenGui")
 notifyGui.Name = "LX_Notify"
@@ -196,7 +196,7 @@ local function toggleAutoQTE(state)
 end
 
 --==================================================
--- ANTI-FALL (generic)
+-- ANTI-FALL
 --==================================================
 local antiFallPlatform = Instance.new("Part")
 antiFallPlatform.Name = "LX_AntiFallPlatform"
@@ -424,7 +424,7 @@ local function tpToRoof()
 end
 
 --==================================================
--- GUID TRACKER (Pentathlon)
+-- GUID TRACKER
 --==================================================
 local guid = nil
 task.spawn(function()
@@ -510,7 +510,7 @@ Close.TextColor3 = C.TEXT; Close.Font = Enum.Font.GothamBold; Close.TextSize = 1
 Close.AutoButtonColor = false; Close.Parent = Header
 Instance.new("UICorner", Close).CornerRadius = UDim.new(0,6)
 
--- Tab bar (scrollable for many tabs)
+-- Tab bar
 local TabBar = Instance.new("Frame")
 TabBar.Position = UDim2.fromOffset(8,44); TabBar.Size = UDim2.new(1,-16,0,32)
 TabBar.BackgroundColor3 = C.PANEL; TabBar.BorderSizePixel = 0; TabBar.Parent = Main
@@ -564,8 +564,8 @@ local function CreateTab(name)
     tab.MouseButton1Click:Connect(function() SwitchPage(name) end)
 end
 
--- Create all pages
-local PagesList = {"FUNCTIONS","ESP","TOOLS","TELEPORT","RLGL","HIDESEEK","TUG","MINGLE","REBEL","SKY","GLASS","DALGONA","PENTATHLON","GUARD","COMBAT","UTILITIES","VISUAL"}
+-- FUNCTIONS removed
+local PagesList = {"ESP","TOOLS","TELEPORT","RLGL","HIDESEEK","TUG","MINGLE","REBEL","SKY","GLASS","DALGONA","PENTATHLON","GUARD","COMBAT","UTILITIES","VISUAL"}
 for _, n in ipairs(PagesList) do CreatePage(n) end
 for _, n in ipairs(PagesList) do CreateTab(n) end
 
@@ -663,9 +663,6 @@ end
 --==================================================
 -- BASE PAGES
 --==================================================
-AddSection(Pages.FUNCTIONS, "AUTO SYSTEMS")
-AddToggle(Pages.FUNCTIONS, "Auto QTE (Universal)", false, function(v) toggleAutoQTE(v) end)
-
 AddSection(Pages.ESP, "ESP FEATURES")
 AddToggle(Pages.ESP, "Player ESP", false, function(v) Config.PlayerESP = v; refreshPlayers() end)
 AddToggle(Pages.ESP, "Guard / NPC ESP", false, function(v) Config.GuardESP = v; refreshWorldESP() end)
@@ -848,7 +845,7 @@ AddToggle(Pages.RLGL, "Auto TP End Last Second", false, function(v)
 end)
 
 --==================================================
--- HIDE AND SEEK PAGE
+-- HIDE AND SEEK
 --==================================================
 AddSection(Pages.HIDESEEK, "HIDE AND SEEK")
 AddActionButton(Pages.HIDESEEK, "Auto Escape", "TP to safe zone", function()
@@ -972,10 +969,8 @@ AddToggle(Pages.HIDESEEK, "Anti Spike", false, function(v)
     end
 end)
 
--- Auto Pop Balloons
 tbl.autoPopBalloonsEnabled = false
 local balloonPrompts = {}
-local balloonHL = {}
 local function isRLGLRed()
     if fn4("RedLightGreenLight") then
         local pg = LP:FindFirstChild("PlayerGui")
@@ -1060,7 +1055,6 @@ AddToggle(Pages.HIDESEEK, "Auto QTE Event", false, function(v)
     end
 end)
 
--- ESP Roles
 tbl.espRolesEnabled = false
 local roleHL, roleConns = {}, {}
 local function updateRoleHL(player)
@@ -1101,7 +1095,6 @@ AddToggle(Pages.HIDESEEK, "ESP Roles", false, function(v)
     else clearRoles() end
 end)
 
--- Auto Dodge
 tbl.autoDodgeEnabled = false
 local dodgeConns = {}
 local dodgeAnimIds = {"105341857343164","88451099342711","79649041083405","73242877658272","114928327045353","135690448001690","103355259844069","125906547773381","121147456137931","96924216250322","116839849594540","104041807075625","83057176809194","103318207627541","121473077508383","94215646393565","81533666958052"}
@@ -1185,7 +1178,6 @@ AddToggle(Pages.HIDESEEK, "Auto Dodge", false, function(v)
     end
 end)
 
--- Auto Kill Hiders
 tbl.killHidersEnabled = false
 local function getWeapon()
     local c = LP.Character; if not c then return nil end
@@ -1221,7 +1213,6 @@ AddToggle(Pages.HIDESEEK, "Auto Kill Hiders", false, function(v)
         if not LP:GetAttribute("IsHunter") then fn5("Not Hunter", "You are not a Hunter."); tbl.killHidersEnabled = false; return end
         tbl2.killThread = true
         task.spawn(function()
-            local savedCF = LP.Character and LP.Character:FindFirstChild("HumanoidRootPart") and LP.Character.HumanoidRootPart.CFrame
             while tbl2.killThread and tbl.killHidersEnabled do
                 if not fn4("HideAndSeek") then task.wait(1)
                 elseif not LP:GetAttribute("IsHunter") then tbl.killHidersEnabled = false; break
@@ -1589,7 +1580,6 @@ AddToggle(Pages.REBEL, "Auto Shoot", false, function(v)
     end
 end)
 
--- Silent Aim (universal)
 local silentAimDone = false
 local function hookSilentAim()
     if silentAimDone then return end
@@ -1651,7 +1641,6 @@ local function hookSilentAim()
 end
 AddToggle(Pages.REBEL, "Silent Aim", false, function(v) tbl.silentAimEnabled = v; if v then hookSilentAim() end end)
 
--- No Recoil / Rapid Fire
 local buffDone = false
 local function hookBuffs()
     if buffDone then return end
@@ -1704,7 +1693,7 @@ AddToggle(Pages.REBEL, "Infinite Ammo", false, function(v)
 end)
 
 --==================================================
--- SKY / SQUID GAME
+-- SKY / SQUID
 --==================================================
 AddSection(Pages.SKY, "SKY / SQUID GAME")
 tbl.skyAntiFallEnabled = false
@@ -2310,16 +2299,11 @@ AddToggle(Pages.GUARD, "Infinite Ammo", false, function(v)
 end)
 
 --==================================================
--- COMBAT / UTILITIES
+-- COMBAT
 --==================================================
 AddSection(Pages.COMBAT, "COMBAT")
 local fly = { Enabled = false, Speed = 32, Conn = nil, BV = nil }
-local flyThread = false
 local flyKey = Enum.KeyCode.U
-local flyAnim = nil
-local function stopFlyAnim(hum)
-    if flyAnim then pcall(function() flyAnim:Stop(0); flyAnim:Destroy() end); flyAnim = nil end
-end
 local function startFly(toggle)
     if toggle then
         if fly.Enabled then return end
@@ -2357,7 +2341,6 @@ local function startFly(toggle)
         if c then
             local h = c:FindFirstChildOfClass("Humanoid")
             if h then
-                stopFlyAnim(h)
                 pcall(function()
                     h.UseJumpPower = true; h.AutoRotate = true; h.PlatformStand = false
                     h:ChangeState(Enum.HumanoidStateType.GettingUp)
@@ -2377,7 +2360,6 @@ UIS.InputBegan:Connect(function(input, gp)
     end
 end)
 
--- Anti Slow
 local combatAntiSlowConn
 AddToggle(Pages.COMBAT, "Anti Slow", false, function(v)
     tbl.combatAntiSlow = v
@@ -2420,9 +2402,10 @@ end)
 --==================================================
 -- UTILITIES
 --==================================================
-AddSection(Pages.UTILITIES, "UTILITIES")
+AddSection(Pages.UTILITIES, "AUTO SYSTEMS")
+AddToggle(Pages.UTILITIES, "Auto QTE (Universal)", false, function(v) toggleAutoQTE(v) end)
 
--- Infinite Jump
+AddSection(Pages.UTILITIES, "GENERAL")
 local ijConn
 AddToggle(Pages.UTILITIES, "Infinite Jump", false, function(v)
     if v and not ijConn then
@@ -2438,7 +2421,6 @@ AddToggle(Pages.UTILITIES, "Infinite Jump", false, function(v)
     end
 end)
 
--- Anti Push / Ragdoll
 tbl.antiPushEnabled = false
 local antiPushConns = {}
 local walkSpeed, jumpPower = 14, 50
@@ -2539,7 +2521,6 @@ AddToggle(Pages.UTILITIES, "Anti Push / Ragdoll", false, function(v)
     else clearAntiPush() end
 end)
 
--- Anti-AFK
 AddToggle(Pages.UTILITIES, "Anti-AFK", false, function(v)
     if v then
         if not tbl2.afkConn then
@@ -2553,7 +2534,6 @@ AddToggle(Pages.UTILITIES, "Anti-AFK", false, function(v)
     end
 end)
 
--- Auto Steal Bandages
 tbl.autoStealBandagesEnabled = false
 local function hasBandage()
     local c = LP.Character
@@ -2613,7 +2593,6 @@ AddToggle(Pages.UTILITIES, "Auto Steal Bandages", false, function(v)
     elseif not v then tbl2.stealThread = nil end
 end)
 
--- FPS Booster
 tbl.fpsBoosterEnabled = false
 AddToggle(Pages.UTILITIES, "FPS Booster / Anti-Lag", false, function(v)
     tbl.fpsBoosterEnabled = v
@@ -2707,7 +2686,6 @@ AddToggle(Pages.VISUAL, "Enable Custom Win Streak", false, function(v)
     end
 end)
 
--- Emote Player
 local emotes = {
     {Name="Dream Journal", AnimId="rbxassetid://117325441970867", SoundId="rbxassetid://88476306353688", Volume=10},
     {Name="Otsukare Summer", AnimId="rbxassetid://134888005420629", SoundId="rbxassetid://127332409398776", Volume=3},
@@ -2731,7 +2709,6 @@ local emotes = {
     {Name="Blue Shirt Kid", AnimId="rbxassetid://83396620848313", SoundId="rbxassetid://115875415839739", Volume=5},
     {Name="Woke Up The World", AnimId="rbxassetid://130106286443990", SoundId="rbxassetid://0275579621574", Volume=5},
 }
-local currentEmote = nil
 local currentEmoteTrack = nil
 local currentEmoteSound = nil
 local function stopEmote()
@@ -2751,12 +2728,9 @@ local function playEmote(emote)
     end
     fn5("Emote", "Playing: " .. emote.Name)
 end
--- Simple dropdown substitute: cycle button
 local emoteIdx = 1
-AddActionButton(Pages.VISUAL, "Emote: " .. emotes[1].Name, "Click to change / Play Emote (next click)", function()
-    emoteIdx = emoteIdx % #emotes + 1
-end)
-AddActionButton(Pages.VISUAL, "Play Selected Emote", "Play current emote", function()
+AddActionButton(Pages.VISUAL, "Play Random Emote", "Play a random emote", function()
+    emoteIdx = math.random(1, #emotes)
     playEmote(emotes[emoteIdx])
 end)
 AddActionButton(Pages.VISUAL, "Stop Emote", "Stop current emote", stopEmote)
@@ -2770,7 +2744,7 @@ task.spawn(function()
 end)
 
 --==================================================
--- DRAGGING & MINIMIZE
+-- DRAGGING
 --==================================================
 local dragging, dragStart, startPos
 Header.InputBegan:Connect(function(input)
@@ -2838,7 +2812,7 @@ LP.CharacterAdded:Connect(function() task.wait(1); refreshPlayers(); refreshWorl
 -- INIT
 --==================================================
 refreshPlayers(); refreshWorldESP(); updateHideSeekESP()
-SwitchPage("FUNCTIONS")
+SwitchPage("ESP")
 
 print("=========================================")
 print(" LUME X - INK GAME EDITION READY")
